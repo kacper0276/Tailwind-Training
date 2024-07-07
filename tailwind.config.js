@@ -6,6 +6,9 @@ module.exports = {
       width: {
         phone: "375px",
       },
+      rounded: {
+        xl: "50px",
+      },
     },
   },
   plugins: [],
