@@ -1,5 +1,3 @@
 # Tailwind-Training
 
-# gulp style
-
-# gulp watch
+This is repo for training Tailwind
