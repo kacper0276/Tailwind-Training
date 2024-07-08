@@ -1,27 +1,30 @@
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
+const tailwindcss = require("tailwindcss");
 const browserSync = require("browser-sync").create();
 
-// Kompilacja stylów
-function style() {
+function css() {
   return gulp
-    .src("./src/*.css")
-    .pipe(postcss())
-    .pipe(gulp.dest("./dist"))
+    .src("src/style.css")
+    .pipe(postcss([tailwindcss, require("autoprefixer")]))
+    .pipe(gulp.dest("dist/css"))
     .pipe(browserSync.stream());
 }
 
-function watch() {
+function serve() {
   browserSync.init({
-    server: {
-      baseDir: "./dist",
-    },
+    server: "./dist",
   });
 
-  gulp.watch("./src/*.css", style);
-  gulp.watch("./tailwind.config.js", style);
-  gulp.watch("./dist/*.html").on("change", browserSync.reload);
+  gulp.watch("src/styles/**/*.css", css);
+  gulp
+    .watch("src/**/*.html")
+    .on("change", gulp.series(copyHtml, browserSync.reload));
 }
 
-exports.watch = watch;
-exports.style = style;
+function copyHtml() {
+  return gulp.src("src/**/*.html").pipe(gulp.dest("dist"));
+}
+
+exports.css = css;
+exports.serve = gulp.series(css, copyHtml, serve);
